@@ -1,59 +1,51 @@
-# ESP-MQTT sample application
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+# ESP32 Remote Attack Tutorial
 
-This example connects to the broker URI selected using `idf.py menuconfig` (using mqtt tcp transport) and as a demonstration subscribes/unsubscribes and send a message on certain topic.
-(Please note that the public broker is maintained by the community so may not be always available, for details please see this [disclaimer](https://iot.eclipse.org/getting-started/#sandboxes))
+## Prerequisites
 
-Note: If the URI equals `FROM_STDIN` then the broker address is read from stdin upon application startup (used for testing)
+Install ESP-IDF version 4.4
 
-It uses ESP-MQTT library which implements mqtt client to connect to mqtt broker.
+Get VM
 
-## How to use example
+Set VM to Bridged Mode, then restart VM if needed.
 
-### Hardware Required
+Connect ESP32 to VM
 
-This example can be executed on any ESP32 board, the only required interface is WiFi and connection to internet.
-
-### Configure the project
-
-* Open the project configuration menu (`idf.py menuconfig`)
-* Configure Wi-Fi or Ethernet under "Example Connection Configuration" menu. See "Establishing Wi-Fi or Ethernet Connection" section in [examples/protocols/README.md](../../README.md) for more details.
-* When using Make build system, set `Default serial port` under `Serial flasher config`.
-
-### Build and Flash
-
-Build the project and flash it to the board, then run monitor tool to view serial output:
+Install mosquitto
 
 ```
-idf.py -p PORT flash monitor
+sudo apt update && sudo apt install mosquitto
 ```
 
-(To exit the serial monitor, type ``Ctrl-]``.)
-
-See the Getting Started Guide for full steps to configure and use ESP-IDF to build projects.
-
-## Example Output
+Confirm mosquitto is installed and running:
 
 ```
-I (3714) event: sta ip: 192.168.0.139, mask: 255.255.255.0, gw: 192.168.0.2
-I (3714) system_api: Base MAC address is not set, read default base MAC address from BLK0 of EFUSE
-I (3964) MQTT_CLIENT: Sending MQTT CONNECT message, type: 1, id: 0000
-I (4164) MQTT_EXAMPLE: MQTT_EVENT_CONNECTED
-I (4174) MQTT_EXAMPLE: sent publish successful, msg_id=41464
-I (4174) MQTT_EXAMPLE: sent subscribe successful, msg_id=17886
-I (4174) MQTT_EXAMPLE: sent subscribe successful, msg_id=42970
-I (4184) MQTT_EXAMPLE: sent unsubscribe successful, msg_id=50241
-I (4314) MQTT_EXAMPLE: MQTT_EVENT_PUBLISHED, msg_id=41464
-I (4484) MQTT_EXAMPLE: MQTT_EVENT_SUBSCRIBED, msg_id=17886
-I (4484) MQTT_EXAMPLE: sent publish successful, msg_id=0
-I (4684) MQTT_EXAMPLE: MQTT_EVENT_SUBSCRIBED, msg_id=42970
-I (4684) MQTT_EXAMPLE: sent publish successful, msg_id=0
-I (4884) MQTT_CLIENT: deliver_publish, message_length_read=19, message_length=19
-I (4884) MQTT_EXAMPLE: MQTT_EVENT_DATA
-TOPIC=/topic/qos0
-DATA=data
-I (5194) MQTT_CLIENT: deliver_publish, message_length_read=19, message_length=19
-I (5194) MQTT_EXAMPLE: MQTT_EVENT_DATA
-TOPIC=/topic/qos0
-DATA=data
+systemctl status mosquitto
+```
+
+```
+netstat -tlpn | grep 1883
+```
+
+Finally, get the IP address of your VM:
+
+```
+ifconfig
+```
+
+This will list the network interfaces on your machine. You are interested in the Ethernet interface, typically named something like "eth0" or "ens33". The IP address of the interface is the address next to "inet".
+
+## Build Example
+
+Run menuconfig
+
+```
+idf.py menuconfig
+```
+
+Go to Example Configuration. This asks you for the URL of the MQTT broker to connect to. We want to connect to the mosquitto broker running on our VM, so set the value to your IP address. The structure of the field is mqtt://<IP address>. For example, in my case, it is mqtt://192.168.1.186.
+
+Now build, flash, and monitor:
+
+```
+idf.py build flash monitor
 ```
