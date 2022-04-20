@@ -147,7 +147,7 @@ f83f2001f83f2001f83f0b01f83f0c01f83f0d01f83f0e01f83f0f01f83f
   <format string to inject '\0' into address 16>
   ```
   
-  By placing the addresses at the beginning of the buffer, the format string attack will actually place those addresses onto the stack. The `<format string to inject...>` lines will reference the stack at different offsets, so by preemptively placing the addresses onto the stack, we can write to them. For example, `%6$hhn` will write data to the first address on the stack, `%7$hhn` will write to the second address, and so forth. There are methods to carefully control which data is written, which will be explained shortly. Now the rest of this section will explain the `inject_payload.sh` script line by line.
+  By placing the addresses at the beginning of the buffer, the format string attack will actually place those addresses onto the stack. The `<format string to inject...>` lines will reference the stack at different offsets, so by preemptively placing the addresses onto the stack, we can write to them. For example, `%6$hhn` will write data to the first address on the stack, `%7$hhn` will write to the second address, and so forth. There are methods to carefully control what data is written, which will be explained shortly. Now the rest of this section will explain the `inject_payload.sh` script line by line.
 
   Line 3 sets the mosquitto_pub command prefix, which prepares our script to send a message to the "/topic/qos0" topic:
   
