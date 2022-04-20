@@ -132,7 +132,7 @@ f83f2001f83f2001f83f0b01f83f0c01f83f0d01f83f0e01f83f0f01f83f
   
   ### Explanation of `inject_payload.sh`
   
-  The `inject_payload.sh` script essentially has the following structure:
+  The `inject_payload.sh` script crafts a payload that essentially has the following structure:
   
   ```
   <address 1>, i.e., 0x3ff80101
@@ -188,3 +188,40 @@ https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfc
 Finally, line 54 combines the mosquitto_pub command with the payload. The payload becomes the message that is published to the "/topic/qos0" topic.
     
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L54
+    
+ ## Explanation of `print_payload.sh`
+    
+ The `print_payload.sh` script crafts a payload with the following structure:
+    
+```
+<address 1>, i.e., 0x3ff80101
+<format string to print address 1 as a string>
+```
+
+  Line 3 constructs the mosquitto_pub command prefix in the same way as before:
+  
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L3
+  
+ Line 5 constructs the newline escape sequence, i.e., \r\n. This has hex value 0xd0a, and we reverse the bytes due to the little endianness.
+  
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L5
+  
+  Line 7 places the address 0x3ff80101 onto the stack. Note that this is the start address of our injected string.
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L7
+  
+  Line 10 casts the address 0x3ff80101 as a string and prints it out by using the parameter "%6$s". In C, a string is also known as a char pointer, so this will print out the value _pointed to_ by 0x3ff80101, which is our malicious string. It will continue to print characters until it hits the null terminator, which is why we intentionally injected the null byte at the end of our string. Also note that surround our parameter with newline escape sequences, so that our string is guaranteed to print on a new line.
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L10
+  
+  Line 13 constructs the payload by combining the address with the format string:
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L13
+  
+  Optionally, lines 16 through 19 print a hexdump of the payload if the user supplies an argument to the script, for example, `sh print_payload.sh 1`:
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L16-L19
+  
+  Finally, line 21 combines the mosquitto_pub command with the payload. The payload becomes the message that is published to the "/topic/qos0" topic.
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L21
