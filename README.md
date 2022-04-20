@@ -70,7 +70,7 @@ If successful, you will see the ESP32 connect to your WiFi access point and subs
 
 ### Test Project
 
-Without closing the ESP32 monitor, open a new termianl. In that new terminal, run the following command, which uses mosquitto_pub (a software for publishing MQTT messages) to publish a simple "Hello" message to the topic "/topic/qos0":
+Without closing the ESP32 monitor, open a new terminal. In that new terminal, run the following command, which uses mosquitto_pub (a software for publishing MQTT messages) to publish a simple "Hello" message to the topic "/topic/qos0":
 
 ```
 mosquitto_pub -h 0.0.0.0 -t /topic/qos0 -m "Hello"
