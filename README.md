@@ -65,3 +65,9 @@ Without closing the ESP32 monitor, open a new termianl. In that new terminal, ru
 ```
 mosquitto_pub -h 0.0.0.0 -t /topic/qos0 -m "Hello"
 ```
+
+## Inject Malicious String into Program
+  
+Now we will see how to inject data (in the form of a string) into a program through a well-known attack called **Format String Attack**. A format string attack can occur when certain functions do not format user input correctly. For example, `printf("%s, input)` is safe, while `printf(input)` is vulnerable to the attack. More details on format string attacks (for x86 architecture) are available here: https://web.ecs.syr.edu/~wedu/Teaching/cis643/LectureNotes_New/Format_String.pdf
+  
+This MQTT application is vulnerable to the format string attack. See line 98 of the main file: https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/86b7400b642051719e6b2161f4da7cff6dcaf6b0/main/app_main.c#L98
