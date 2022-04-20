@@ -131,3 +131,36 @@ f83f2001f83f2001f83f0b01f83f0c01f83f0d01f83f0e01f83f0f01f83f
 
   
   ### Explanation of `inject_payload.sh`
+  
+  The `inject_payload.sh` script essentially has the following structure:
+  
+  ```
+  <address 1>, i.e., 0x3ff80101
+  <address 2>, i.e., 0x3ff80102
+  ...
+  <address 16>, i.e., 0x3ff80110
+  <format string to inject 'Y' into address 1>
+  <format string to inject 'o' into address 2>
+  <format string to inject 'u' into address 3>
+   ...
+  <format string to inject '!' into address 15>
+  <format string to inject '\0' into address 16>
+  ```
+  
+  By placing the addresses at the beginning of the buffer, the format string attack will actually place those addresses onto the stack. The `<format string to inject...>` lines will reference the stack at different offsets, so by preemptively placing the addresses onto the stack, we can write to them. For example, `%6$hhn` will write data to the first address on the stack, `%7$hhn` will write to the second address, and so forth. There are methods to carefully control which data is written, which will be explained shortly. Now the rest of this section will explain the `inject_payload.sh` script line by line.
+
+  Line 3 sets the mosquitto_pub command prefix, which prepares our script to send a message to the "/topic/qos0" topic:
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L3
+  
+  Lines 5 - 20 prepare the memory addresses we will need for the attack. We create addresses 0x3ff80101 - 0x3ff80110. Each address will correspond to a byte from our malicious string, including the null terminator. The address bytes are reversed since the ESP32 uses little endian addressing. We will use the format string attack to place these addresses onto the stack.
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L5-L20
+  
+  Line 23 combines all addresses together into a single variable:
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L23
+  
+  Lines 25 through 40 write the bytes into the addresses. 
+  
+  https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L25-L40
