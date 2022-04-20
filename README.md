@@ -1,44 +1,52 @@
 # ESP32 Remote Attack Tutorial
 
+This project demonstrates how to remotely exploit a well-known software vulnerability called to the **Format String Attack**. The attack allows users to arbitrarily read and write memory. In this example, we will write a malicious string "You are hacked!" into memory and then print the string out. As a case study, we will use a vulnerable MQTT application that subscribes to some topics, allowing users to communicate remotely with the ESP32.
+
 ## Prerequisites
 
-Install ESP-IDF version 4.4
+Follow [these instructions](https://docs.espressif.com/projects/esp-idf/en/v4.4.1/esp32/get-started/index.html) to install ESP-IDF version 4.4.
 
-Get VM
+Change the network settings in your VM so that it uses Bridged mode instead of NAT mode. Bridged mode allows allows other devices in your network to communicate with your VM, which will be important later. If needed, you can restart your VM to reset the network configuration.
 
-Set VM to Bridged Mode, then restart VM if needed.
-
-Connect ESP32 to VM
-
-Install mosquitto
+In your VM, open a terminal and install mosquitto, which is a popular MQTT application:
 
 ```
 sudo apt update && sudo apt install mosquitto mosquitto-clients
 ```
 
-Confirm mosquitto is installed and running:
+On Ubuntu, installing mosquitto should automatically start running it as a service on port 1883. You can confirm this by running the following command:
 
 ```
 systemctl status mosquitto
 ```
 
+If you see "active (running)" in green letters, then mosquitto is running.
+
+Alternatively, you can check that port 1883 is open and listening on your system by running the following command:
+
 ```
 netstat -tlpn | grep 1883
 ```
 
-Finally, get the IP address of your VM:
+Finally, we need to retrieve the IP address of the VM. To do this, run the following command:
 
 ```
 ifconfig
 ```
 
-This will list the network interfaces on your machine. You are interested in the Ethernet interface, typically named something like "eth0" or "ens33". The IP address of the interface is the address next to "inet".
+This will list the network interfaces on your machine. We are only interested in the Ethernet interface, typically named something like "eth0" or "ens33". The IP address of the interface is the address next to "inet". Make a note of this address.
 
-## Build, Flash, and Test Projet
+Now download this project:
+
+```
+git clone https://github.com/PBearson/ESP32_Remote_Attack_Tutorial.git
+```
+
+## Build, Flash, and Test Project
 
 ### Configure Project
 
-Run menuconfig
+Navigate to the root directory of thsi project, and open the configuration menu:
 
 ```
 idf.py menuconfig
@@ -46,11 +54,13 @@ idf.py menuconfig
 
 Go to Example Configuration. This asks you for the URL of the MQTT broker to connect to. We want to connect to the mosquitto broker running on our VM, so set the value to your IP address. The structure of the field is mqtt://<IP address>. For example, in my case, it is mqtt://192.168.1.186.
 
-Now go to Example Connection Configuration. This asks you to supply your WiFi connection information. Enter your SSID and password. There is no need to change any other settings. You can now exit and save the configuration.
+Now go to Example Connection Configuration. This asks you to supply your WiFi connection information. Enter your SSID and password. There is no need to change any other settings.
+  
+Now exit and save the configuration.
 
 ### Build, Flash, and Monitor
 
-Now build, flash, and monitor:
+To build, flash, and open the serial monitor, run the following command:
 
 ```
 idf.py build flash monitor
