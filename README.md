@@ -46,13 +46,13 @@ git clone https://github.com/PBearson/ESP32_Remote_Attack_Tutorial.git
 
 ### Configure Project
 
-Navigate to the root directory of thsi project, and open the configuration menu:
+Navigate to the root directory of this project, and open the configuration menu:
 
 ```
 idf.py menuconfig
 ```
 
-Go to Example Configuration. This asks you for the URL of the MQTT broker to connect to. We want to connect to the mosquitto broker running on our VM, so set the value to your IP address. The structure of the field is mqtt://<IP address>. For example, in my case, it is mqtt://192.168.1.186.
+Go to Example Configuration. This asks you for the URL of the MQTT broker to connect to. We want to connect to the mosquitto broker running on our VM, so set the value to your IP address. The structure of the field is mqtt://<IP address>. For example, in my case, it is mqtt://192.168.1.186. Note that the ESP32 can only connect to the broker if our VM uses the Bridged networking mode.
 
 Now go to Example Connection Configuration. This asks you to supply your WiFi connection information. Enter your SSID and password. There is no need to change any other settings.
   
