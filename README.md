@@ -173,4 +173,18 @@ For the third address, 0x3ff80103, we want to write the character 'u'. This has 
   
   https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L25-L40
     
-
+Line 43 combines lines 25 through 40 into a single variable:
+    
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L43
+    
+Line 46 crafts the final payload by combining the addresses with the format string parameters:
+    
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L46
+    
+Optionally, lines 49 through 52 print a hexdump of the payload if the user supplies an argument to the script, for example, `sh inject_payload.sh 1`:
+     
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L49-L52
+    
+Finally, line 54 combines the mosquitto_pub command with the payload. The payload becomes the message that is published to the "/topic/qos0" topic.
+    
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L54
