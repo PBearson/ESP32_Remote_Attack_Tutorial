@@ -46,7 +46,9 @@ injection=$inject1$inject2$inject3$inject4$inject5$inject6$inject7$inject8$injec
 payload=$addresses$injection
 
 # Print the payload out
-echo "PAYLOAD (as hexdump):"
-echo $payload | xxd -p
+if [ $# -gt 0 ]; then
+    echo "PAYLOAD (as hexdump):"
+    echo $payload | xxd -p
+fi
 
 $command_prefix "$payload"
