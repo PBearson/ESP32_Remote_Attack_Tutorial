@@ -210,7 +210,7 @@ https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd8858
   
   https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L7
   
-  Line 10 casts the address 0x3ff80101 as a string and prints it out by using the parameter "%6$s". In C, a string is also known as a char pointer, so this will print out the value _pointed to_ by 0x3ff80101, which is our malicious string. It will continue to print characters until it hits the null terminator, which is why we intentionally injected the null byte at the end of our string. Also note that surround our parameter with newline escape sequences, so that our string is guaranteed to print on a new line.
+  Line 10 casts the address 0x3ff80101 as a string and prints it out by using the parameter "%6$s". In C, a string is also known as a char pointer, so this will print out the value _pointed to_ by 0x3ff80101, which is our malicious string. It will continue to print characters until it hits the null terminator, which is why we intentionally injected the null byte at the end of our string. Also note that we surround our parameter with newline escape sequences, so that our string is guaranteed to print on a new line.
   
   https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L10
   
