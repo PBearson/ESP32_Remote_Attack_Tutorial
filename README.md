@@ -336,11 +336,11 @@ The `write_memory.sh` script crafts 5 different payloads with the following stru
 
 Here, `base_address` is the address provided by the user. This script injects the "root" string into the desired address. Therefore, the script injects "r" into `base_address`, "o" into `base_address + 1` and `base_address + 2`, "t" into `base_address + 3`, and the null byte into `base_address + 4`. In this case, `base_address` should be set to the address of `username` in order to overwrite that data.
 
-Line 7 retrieves the 3 most significant bytes from the supplied address. Due to the formatting, these are the last 6 characters in the address string. For example, if the supplied address is "0854fb3f", then this command retrieves "54fb3f".
+Line 7 retrieves the 3 most significant bytes (MSB) from the supplied address. Due to the formatting, these are the last 6 characters in the address string. For example, if the supplied address is "0854fb3f", then this command retrieves "54fb3f".
 
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L7
 
-Line 8 obtains the least significant byte from the user-supplied address. These are the first 2 characters in the address string. For example, if the supplied address is "0854fb3f", then this command retrieves "08".
+Line 8 obtains the least significant byte (LSB) from the user-supplied address. These are the first 2 characters in the address string. For example, if the supplied address is "0854fb3f", then this command retrieves "08".
 
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L8
 
@@ -350,4 +350,20 @@ Since each character is written to memory in a separate payload (i.e., we call `
 
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L8
 
-Lines 16 through 40 contain a `for` loop that iterates over the number range 0 through 4, and `i` holds the current loop iteration. The loop is explained further below.
+Lines 16 through 40 contain a `for` loop that iterates over the numbers 0 through 4, and `i` holds the current loop iteration. The loop is explained further below.
+
+In lines 19 and 20, the LSB is converted from string to integer, incremented by `i`, and converted back to a string.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L19-L20
+
+In line 23, the address is constructed by combining the LSB with the MSB.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L23
+
+In lines 26 through 34, we select the format strings depending on which iteration we are in the loop (i.e., the value of `i`). The format strings were previously defined in lines 10 through 13. For example, when `i` = 0, we select the format string that writes "r" into memory; when `i` = 1, we select the format string that writes "o" into memory; and so forth.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L26-L34
+
+Finally, line 37 crafts the payload by combining the address with the format string. Line 38 sends the payload.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L37-L38
