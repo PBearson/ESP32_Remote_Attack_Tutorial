@@ -252,7 +252,7 @@ https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/8ecb74812f1ed7fee7
 
 The goal of this attack is to satisfy the `if` statement above and execute the publish command without changing the source code. To aid in this attack, there are two helper scripts provided. The first script, `read_memory.sh`, reads a string from a user-specified memory address. This will help us to confirm where the `username` string is located in memory. The second script, `write_memory.sh`, writes the string "root" to a user-specified memory address.
 
-Before executing either script, we need to find where `username` _should be_ stored in memory. We can use the `readelf` command to analyze the symbol table of our application and try to find `username`. Run the following command:
+Before executing either script, we need to find the address of `username` in memory. We can use the `readelf` command to analyze the symbol table of our application and try to find `username`. Run the following command:
 
 ```
 readelf -s build/mqtt_tcp.elf | grep username
