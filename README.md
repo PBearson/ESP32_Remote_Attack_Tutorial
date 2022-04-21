@@ -335,3 +335,21 @@ The `write_memory.sh` script crafts 5 different payloads with the following stru
 ```
 
 Here, `base_address` is the address provided by the user. This script injects the "root" string into the desired address. Therefore, the script injects "r" into `base_address`, "o" into `base_address + 1` and `base_address + 2`, "t" into `base_address + 3`, and the null byte into `base_address + 4`. In this case, `base_address` should be set to the address of `username` in order to overwrite that data.
+
+Line 8 retrieves the 3 most significant bytes from the supplied address. Due to the formatting, these are the last 6 characters it the address string. For example, if the supplied address is "0854fb3f", then this command retrieves "54fb3f".
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/d5a63195190ea73825cfb251dfb982ae2a125616/write_memory.sh#L8
+
+Lines 10 through 13 specify the format strings needed to write "r", "o", "t", and the null byte into memory. The assumption is that these format strings are preceded by a memory address, so `printf` will have already printed 4 bytes by the time the format strings are executed. For example, the hex value of "r" is 0x72, so we can print an additional 110 (0x6e) bytes to write "r" into memory. 
+
+Since each character is written to memory in a separate payload (i.e., we call `printf` separately for each character), the number of bytes printed by `printf` always starts at 4 when the format string is executed.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/d5a63195190ea73825cfb251dfb982ae2a125616/write_memory.sh#L10-L13
+
+Lines 16 through 40 contain a `for` loop that iterates through the number 0 through 4, and `i` holds the current loop iteration. The loop is explained further below.
+
+Line 19 obtains the least significant byte from the user-supplied address. These arerst 2 characters in the address string. For example, if the supplied address is "0854fb3f", then this command retrieves "08".
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/d5a63195190ea73825cfb251dfb982ae2a125616/write_memory.sh#L19
+
+Line 20 converts the least significant byte into 
