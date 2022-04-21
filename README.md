@@ -238,7 +238,7 @@ https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd8858
 
 ## Attack 2: Overwrite Data in Program
 
-In this attack, we will overwrite a global variable `username` in the program and change its behavior at runtime. Line 35 shows the initial definition of `usename`. It is a character array of size 8.
+In this attack, we will overwrite a global variable `username` in the program and change its behavior at runtime. Line 35 shows the initial definition of `username`. It is a character array of size 8.
 
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/8ecb74812f1ed7fee75b1221733c3785e5c3eee2/main/app_main.c#L35
 
