@@ -1,6 +1,6 @@
 # ESP32 Remote Attack Tutorial
 
-This project demonstrates how to remotely exploit a well-known software vulnerability called to the **Format String Attack**. The attack allows users to arbitrarily read and write memory. In this example, we will write a malicious string "You are hacked!" into memory and then print the string out. As a case study, we will use a vulnerable MQTT application that subscribes to some topics, allowing users to communicate remotely with the ESP32.
+This project demonstrates how to remotely exploit a well-known software vulnerability called to the **Format String Attack**. The attack allows users to arbitrarily read and write memory. We will show two examples of how to perform a remote attack on the ESP32. In the first example, we will write a malicious string "You are hacked!" into memory and then print the string out. In the second example, we will overwrite a global variable called `username` that influences the behavior of the program. As a case study, we will use a vulnerable MQTT application that subscribes to some topics, allowing users to communicate remotely with the ESP32.
 
 ## Prerequisites
 
