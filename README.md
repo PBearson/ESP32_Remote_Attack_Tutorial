@@ -319,7 +319,7 @@ You should see mosquitto_sub receive the "PING FROM ESP32" message. This confirm
 
 The `read_memory.sh` script crafts a payload that is almost exactly identical to `print_payload.sh`. The only difference is that the address is user-controlled instead of fixed.
 
-Line 13 constructs the address supplied from user input.
+Line 13 constructs the address supplied from user input. Note that the address must be little-endian formatted:
 
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/d5a63195190ea73825cfb251dfb982ae2a125616/read_memory.sh#L13
 
