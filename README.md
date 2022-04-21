@@ -360,7 +360,7 @@ In line 23, the address is constructed by combining the LSB with the MSB.
 
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L23
 
-In lines 26 through 34, we select the format strings depending on which iteration we are in the loop (i.e., the value of `i`). The format strings were previously defined in lines 10 through 13. For example, when `i` = 0, we select the format string that writes "r" into memory; when `i` = 1, we select the format string that writes "o" into memory; and so forth.
+In lines 26 through 34, we select the format string depending on which iteration we are in the loop (i.e., the value of `i`). The format strings were previously defined in lines 10 through 13. For example, when `i` = 0, we select the format string that writes "r" into memory; when `i` = 1, we select the format string that writes "o" into memory; and so forth.
 
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L26-L34
 
