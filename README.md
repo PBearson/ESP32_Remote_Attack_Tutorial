@@ -272,6 +272,48 @@ If done correctly, you will see the ESP32's serial monitor print out "esp32", wh
 
 ![image](https://user-images.githubusercontent.com/11084018/164502167-adc4ced4-04a3-43ac-806b-d69c78434479.png)
 
+Now that we confirmed exactly where `username` is in memory, we can use the `write_memory.sh` script to overwrite it:
+
+```
+bash write_memory.sh 0854fb3f
+```
+
+Now execute `read_memory.sh` again to see if `username` has changed:
+
+```
+bash read_memory.sh 0854fb3f
+```
+
+If successful, the serial monitor will now print out "root", which is the new value of `username`!
+
+![image](https://user-images.githubusercontent.com/11084018/164506765-48b71973-599b-4725-a304-cb20729f1306.png)
+
+Finally, to satisfy the `if` statement from before, send a "ping" message to the "/topic/qos0":
+
+```
+mosquitto_pub -h 0.0.0.0 -t /topic/qos0 -m ping
+```
+
+The serial monitor will print a message indicating that a publish event has just occurred. This seemingly confirms that our attack worked.
+
+![image](https://user-images.githubusercontent.com/11084018/164507129-3b42d60d-29a5-4c46-a51a-dd663ab7d924.png)
+
+To make sure the attack works, we can subscribe to the "/topic/root" topic ourselves. Open a third terminal and use mosquitto_sub to subscribe to the topic:
+
+```
+mosquitto_sub -h 0.0.0.0 -t "/topic/root"
+```
+
+Now publish the "ping" message again:
+
+
+```
+mosquitto_pub -h 0.0.0.0 -t /topic/qos0 -m ping
+```
+
+You should see mosquitto_sub receive the "PING FROM ESP32" message. This confirms that the attack worked!
+
+![image](https://user-images.githubusercontent.com/11084018/164509820-7e9ba38a-0daf-45fc-b1f6-4de825fa12fe.png)
 
 ### Explanation of `read_memory.sh`
 
