@@ -32,6 +32,8 @@
 
 static const char *TAG = "MQTT_EXAMPLE";
 
+// char* username;
+char username[8];
 
 static void log_error_if_nonzero(const char *message, int error_code)
 {
@@ -97,7 +99,18 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         snprintf(buf, sizeof(buf), "%s", event->data);
         printf(buf);
         printf("\r\n");
+
+
+        if(strcmp(username, "root") == 0 && strcmp(buf, "ping") == 0)
+        {
+            msg_id = esp_mqtt_client_publish(client, "/topic/root", "PING FROM ESP32", 0, 0, 0);
+            ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+        }
+
         break;
+
+
+
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
         if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT) {
@@ -173,6 +186,9 @@ void app_main(void)
      * examples/protocols/README.md for more information about this function.
      */
     ESP_ERROR_CHECK(example_connect());
+
+    // username = malloc(8);
+    strcpy(username, "esp32");
 
     mqtt_app_start();
 }
