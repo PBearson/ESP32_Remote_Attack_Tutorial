@@ -199,7 +199,7 @@ Finally, line 54 combines the mosquitto_pub command with the payload. The payloa
     
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/605baf042e11948bfcca83b64565830069b863e3/inject_payload.sh#L54
     
- ## Explanation of `print_payload.sh`
+ ### Explanation of `print_payload.sh`
     
  The `print_payload.sh` script crafts a payload with the following structure:
     
@@ -235,3 +235,15 @@ https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd8858
   Finally, line 21 combines the mosquitto_pub command with the payload. The payload becomes the message that is published to the "/topic/qos0" topic.
   
   https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L21
+
+## Overwrite Data in Program
+
+TODO
+
+### Explanation of `write_memory.sh`
+
+TODO
+
+### Explanation of `read_memory.sh`
+
+TODO
