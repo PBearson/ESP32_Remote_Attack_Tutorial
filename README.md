@@ -348,7 +348,7 @@ Lines 10 through 13 specify the format strings needed to write "r", "o", "t", an
 
 Since each character is written to memory in a separate payload (i.e., we call `printf` separately for each character), the number of bytes printed by `printf` always starts at 4 when the format string is executed.
 
-https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L8
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L10-L13
 
 Lines 16 through 40 contain a `for` loop that iterates over the numbers 0 through 4, and `i` holds the current loop iteration. The loop is explained further below.
 
