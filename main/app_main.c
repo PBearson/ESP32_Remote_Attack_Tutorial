@@ -32,7 +32,6 @@
 
 static const char *TAG = "MQTT_EXAMPLE";
 
-// char* username;
 char username[8];
 
 static void log_error_if_nonzero(const char *message, int error_code)
@@ -187,7 +186,6 @@ void app_main(void)
      */
     ESP_ERROR_CHECK(example_connect());
 
-    // username = malloc(8);
     strcpy(username, "esp32");
 
     mqtt_app_start();
