@@ -76,7 +76,7 @@ Without closing the ESP32 monitor, open a new terminal. In that new terminal, ru
 mosquitto_pub -h 0.0.0.0 -t /topic/qos0 -m "Hello"
 ```
 
-## Inject Malicious String into Program
+## Attack 1: Inject Malicious String into Program
   
 Now we will see how to inject data (in the form of a string) into a program through a well-known attack called **Format String Attack**. A format string attack can occur when certain functions do not format user input correctly. For example, `printf("%s, input)` is safe, while `printf(input)` is vulnerable to the attack. More details on format string attacks (for x86 architecture) are available here: https://web.ecs.syr.edu/~wedu/Teaching/cis643/LectureNotes_New/Format_String.pdf
   
@@ -87,7 +87,7 @@ This MQTT application is vulnerable to the format string attack. See line 98 of 
   To execute the first script, run the following command in your second terminal:
   
   ```
-  sh inject_payload.sh
+  bash inject_payload.sh
   ```
   
   This command uses mosquitto_pub to publish the following payload (in binary) to the ESP32:
@@ -113,7 +113,7 @@ f83f2001f83f2001f83f0b01f83f0c01f83f0d01f83f0e01f83f0f01f83f
   To execute the second script, run the following command:
   
   ```
-  sh print_payload.sh
+  bash print_payload.sh
   ```
   
   This command will use mosquitto_pub to publish the following payload (in binary) to the ESP32:
@@ -236,14 +236,47 @@ https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd8858
   
   https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd885824382b0da537cd912fb773/print_payload.sh#L21
 
-## Overwrite Data in Program
+## Attack 2: Overwrite Data in Program
+
+In this attack, we will overwrite a global variable `username` in the program and change its behavior at runtime. Line 35 shows the initial definition of `usename`. It is a character array of size 8.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/8ecb74812f1ed7fee75b1221733c3785e5c3eee2/main/app_main.c#L35
+
+In the `app_main` function, the string "esp32" is copied over to `username`.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/8ecb74812f1ed7fee75b1221733c3785e5c3eee2/main/app_main.c#L189
+
+In the `mqtt_event_handler` function, the app checks the value of `username` every time it receives a message from one of its subscribed topics. If the name is set to "root", and if the received message was "ping", then the app will respond by publishing a message "PING FROM ESP32" to the topic "/topic/root".
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/8ecb74812f1ed7fee75b1221733c3785e5c3eee2/main/app_main.c#L103-L107
+
+The goal of this attack is to satisfy the `if` statement above and execute the publish command without changing the source code. To aid in this attack, there are two helper scripts provided. The first script, `read_memory.sh`, reads a string from a user-specified memory address. This will help us to confirm where the `username` string is located in memory. The second script, `write_memory.sh`, writes the string "root" to a user-specified memory address.
+
+Before executing either script, we need to find where `username` is stored in memory. We can use the `readelf` command to analyze the symbol table of our application and try to find `username`. Run the following command:
+
+```
+readelf -s build/mqtt_tcp.elf | grep username
+```
+
+In the output, you will see various information about the symbol, including its memory address in the second column. Make a note of the address.
+
+![image](https://user-images.githubusercontent.com/11084018/164498855-81d2ea1a-24fe-4b97-aa4d-eaa83430ac8c.png)
+
+Now we will execute the `read_memory.sh` script to confirm that `username` is allocated to the address we found. For this example, I will assume the address is 0x3ffb5408. First, make sure that the applicaton is running in a separate terminal. Now run the script, and pass the memory address as an argument. The script expects little-endian format, so make sure the address is formatted correctly; for example, 0x3ffb5408 should be written as "0854fb3f".
+
+```
+bash read_memory.sh 0854fb3f
+```
+
+If done correctly, you will see the ESP32's serial monitor print out "esp32", which is the current value of `username`.
+
+![image](https://user-images.githubusercontent.com/11084018/164502167-adc4ced4-04a3-43ac-806b-d69c78434479.png)
+
+
+### Explanation of `read_memory.sh`
 
 TODO
 
 ### Explanation of `write_memory.sh`
-
-TODO
-
-### Explanation of `read_memory.sh`
 
 TODO
