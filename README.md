@@ -317,8 +317,21 @@ You should see mosquitto_sub receive the "PING FROM ESP32" message. This confirm
 
 ### Explanation of `read_memory.sh`
 
-TODO
+The `read_memory.sh` script crafts a payload that is almost exactly identical to `print_payload.sh`. The only difference is that the address is user-controlled instead of fixed.
+
+Line 13 constructs the address supplied from user input.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/d5a63195190ea73825cfb251dfb982ae2a125616/read_memory.sh#L13
+
+The rest of the file is identical to `print_payload.sh` and will not be explained here.
 
 ### Explanation of `write_memory.sh`
 
-TODO
+The `write_memory.sh` script crafts 5 different payloads with the following structure:
+
+```
+<base_address + i>, where i ranges from 0 to 4
+<format string to inject a byte into base_address + i>
+```
+
+Here, `base_address` is the address provided by the user. This script injects the "root" string into the desired address. Therefore, the script injects "r" into `base_address`, "o" into `base_address + 1` and `base_address + 2`, "t" into `base_address + 3`, and the null byte into `base_address + 4`. In this case, `base_address` should be set to the address of `username` in order to overwrite that data.
