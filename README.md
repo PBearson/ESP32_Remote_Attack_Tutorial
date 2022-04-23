@@ -6,7 +6,7 @@ This project demonstrates how to remotely exploit a well-known software vulnerab
 
 Follow [these instructions](https://docs.espressif.com/projects/esp-idf/en/v4.4.1/esp32/get-started/index.html) to install ESP-IDF version 4.4.
 
-Change the network settings in your VM so that it uses Bridged mode instead of NAT mode. Bridged mode allows allows other devices in your network to communicate with your VM, which will be important later. If needed, you can restart your VM to reset the network configuration.
+Change the network settings in your VM so that it uses Bridged mode instead of NAT mode. Bridged mode allows other devices in your network to communicate with your VM, which will be important later. If needed, you can restart your VM to reset the network configuration.
 
 In your VM, open a terminal and install mosquitto, which is a popular MQTT application:
 
