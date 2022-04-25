@@ -1,12 +1,12 @@
 # ESP32 Remote Attack Tutorial
 
-This project demonstrates how to remotely exploit a well-known software vulnerability called to the **Format String Attack**. The attack allows users to arbitrarily read and write memory. We will show two examples of how to perform a remote attack on the ESP32. In the first example, we will write a malicious string "You are hacked!" into memory and then print the string out. In the second example, we will overwrite a global variable called `username` that influences the behavior of the program. As a case study, we will use a vulnerable MQTT application that subscribes to some topics, allowing users to communicate remotely with the ESP32.
+This project demonstrates how to remotely exploit a well-known software vulnerability called the **Format String Attack**. The attack allows users to arbitrarily read and write memory. We will show two examples of how to perform a remote attack on the ESP32. In the first example, we will write a malicious string "You are hacked!" into memory and then print the string out. In the second example, we will overwrite a global variable called `username` that influences the behavior of the program. As a case study, we will use a vulnerable MQTT application that subscribes to some topics, allowing users to communicate remotely with the ESP32.
 
 ## Prerequisites
 
 Follow [these instructions](https://docs.espressif.com/projects/esp-idf/en/v4.4.1/esp32/get-started/index.html) to install ESP-IDF version 4.4.
 
-Change the network settings in your VM so that it uses Bridged mode instead of NAT mode. Bridged mode allows allows other devices in your network to communicate with your VM, which will be important later. If needed, you can restart your VM to reset the network configuration.
+Change the network settings in your VM so that it uses Bridged mode instead of NAT mode. Bridged mode allows other devices in your network to communicate with your VM, which will be important later. If needed, you can restart your VM to reset the network configuration.
 
 In your VM, open a terminal and install mosquitto, which is a popular MQTT application:
 
@@ -238,7 +238,7 @@ https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/13cb0294852cdd8858
 
 ## Attack 2: Overwrite Data in Program
 
-In this attack, we will overwrite a global variable `username` in the program and change its behavior at runtime. Line 35 shows the initial definition of `usename`. It is a character array of size 8.
+In this attack, we will overwrite a global variable `username` in the program and change its behavior at runtime. Line 35 shows the initial definition of `username`. It is a character array of size 8.
 
 https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/8ecb74812f1ed7fee75b1221733c3785e5c3eee2/main/app_main.c#L35
 
@@ -335,3 +335,35 @@ The `write_memory.sh` script crafts 5 different payloads with the following stru
 ```
 
 Here, `base_address` is the address provided by the user. This script injects the "root" string into the desired address. Therefore, the script injects "r" into `base_address`, "o" into `base_address + 1` and `base_address + 2`, "t" into `base_address + 3`, and the null byte into `base_address + 4`. In this case, `base_address` should be set to the address of `username` in order to overwrite that data.
+
+Line 7 retrieves the 3 most significant bytes (MSB) from the supplied address. Due to the formatting, these are the last 6 characters in the address string. For example, if the supplied address is "0854fb3f", then this command retrieves "54fb3f".
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L7
+
+Line 8 obtains the least significant byte (LSB) from the user-supplied address. These are the first 2 characters in the address string. For example, if the supplied address is "0854fb3f", then this command retrieves "08".
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L8
+
+Lines 10 through 13 specify the format strings needed to write "r", "o", "t", and the null byte into memory. The assumption is that these format strings are preceded by a memory address, so `printf` will have already printed 4 bytes by the time the format strings are executed. For example, the hex value of "r" is 0x72, so we can print an additional 110 (0x6e) bytes to write "r" into memory. 
+
+Since each character is written to memory in a separate payload (i.e., we call `printf` separately for each character), the number of bytes printed by `printf` always starts at 4 when the format string is executed.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L10-L13
+
+Lines 16 through 40 contain a `for` loop that iterates over the numbers 0 through 4, and `i` holds the current loop iteration. The loop is explained further below.
+
+In lines 19 and 20, the LSB is converted from string to integer, incremented by `i`, and converted back to a string.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L19-L20
+
+In line 23, the address is constructed by combining the LSB with the MSB.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L23
+
+In lines 26 through 34, we select the format string depending on which iteration we are in the loop (i.e., the value of `i`). The format strings were previously defined in lines 10 through 13. For example, when `i` = 0, we select the format string that writes "r" into memory; when `i` = 1, we select the format string that writes "o" into memory; and so forth.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L26-L34
+
+Finally, line 37 crafts the payload by combining the address with the format string. Line 38 sends the payload.
+
+https://github.com/PBearson/ESP32_Remote_Attack_Tutorial/blob/1c9cf0196219d0334bda2f7ee3f9865b7d442892/write_memory.sh#L37-L38
